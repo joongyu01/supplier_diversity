@@ -8,12 +8,9 @@
 import collections
 import csv
 import datetime as dt
-import glob
 import json
-import os
 from pathlib import Path
 import sys
-import openpyxl
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW_DIR = ROOT / 'data' / 'raw' / 'shopmall'
@@ -85,6 +82,7 @@ def load_excel_registry(excel_path=EXCEL_PATH):
         print(f"[경고] 엑셀 파일이 없습니다: {excel_path}", file=sys.stderr)
         return {}
 
+    import openpyxl  # 빌드에만 필요. 테스트·사이트는 표준 라이브러리만 쓴다.
     wb = openpyxl.load_workbook(excel_path, read_only=True)
     registry = {}  # bizno -> dict
 
