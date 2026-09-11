@@ -1,5 +1,6 @@
 """Read official MOEL notices. Discovery is NOT an enterprise-status decision."""
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import datetime as dt
 import hashlib
 import json
@@ -7,6 +8,7 @@ import os
 from pathlib import Path
 import re
 import time
+import threading
 from urllib.parse import parse_qs, urlencode, urljoin, urlparse
 from urllib.request import Request, urlopen
 
@@ -32,14 +34,21 @@ def official_url(url):
 class Client:
     def __init__(self, max_requests=800, delay=0.4):
         self.count, self.max_requests, self.delay = 0, max_requests, delay
+        self.lock = threading.Lock()
+        self.last_request = 0
 
     def get(self, url):
         official_url(url)
         for attempt in range(3):
-            if self.count >= self.max_requests:
-                raise RuntimeError('Request budget exhausted; snapshot will not be replaced')
-            self.count += 1
-            time.sleep(self.delay if attempt == 0 else 2 ** attempt)
+            if attempt:
+                time.sleep(2 ** attempt)
+            # One shared rate limiter and budget, including retries, across all workers.
+            with self.lock:
+                if self.count >= self.max_requests:
+                    raise RuntimeError('Request budget exhausted; snapshot will not be replaced')
+                time.sleep(max(0, self.delay - (time.monotonic() - self.last_request)))
+                self.count += 1
+                self.last_request = time.monotonic()
             try:
                 req = Request(url, headers={'User-Agent': 'SupplierDiversity-NoticeMonitor/1.0'})
                 with urlopen(req, timeout=30) as response:
@@ -177,25 +186,36 @@ def run(args):
     client = Client(args.max_requests, args.delay)
     old = json.loads(args.output.read_text(encoding='utf-8')) if args.output.exists() else {'notices': []}
     found, coverage, errors = {}, [], []
-    for office in offices:
-        for board in BOARDS:
+    listings = []
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        tasks = {pool.submit(scan_board, client, office, board, since): (office, board)
+                 for office in offices for board in BOARDS}
+        for task in as_completed(tasks):
+            office, board = tasks[task]
             try:
-                rows, pages = scan_board(client, office, board, since)
+                rows, pages = task.result()
                 coverage.append({'office': office['code'], 'board': board, 'pages': pages, 'matches': len(rows)})
-                for row in rows:
-                    # Shared public notices appear under many offices; bbs_seq identifies one post.
-                    found.setdefault(row['id'], row)
+                listings.extend(rows)
             except (ValueError, RuntimeError) as e:
                 errors.append(f"{office['code']}/{board}: {e}")
-        print(f"Checked {office['code']}; {client.count} requests", flush=True)
-        if client.count >= client.max_requests:
-            break
+                print(errors[-1], flush=True)
+            print(f"Checked {office['code']}/{board}; {len(coverage)}/{len(tasks)} boards; {client.count} requests", flush=True)
+    coverage.sort(key=lambda c: (c['office'], c['board']))
+    for row in sorted(listings, key=lambda r: r['url']):
+        # Stable canonical URL even when workers finish in a different order.
+        found.setdefault(row['id'], row)
     current = []
-    for record in found.values():
-        try:
-            current.append(parse_detail(client.get(record['url']), record))
-        except (ValueError, RuntimeError) as e:
-            errors.append(f"notice {record['id']}: {e}")
+    def read_detail(record):
+        return parse_detail(client.get(record['url']), record)
+    if not errors:
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            tasks = {pool.submit(read_detail, record): record for record in found.values()}
+            for task in as_completed(tasks):
+                record = tasks[task]
+                try:
+                    current.append(task.result())
+                except (ValueError, RuntimeError) as e:
+                    errors.append(f"notice {record['id']}: {e}")
     if len(coverage) != len(offices) * len(BOARDS) or errors:
         raise RuntimeError('Incomplete scan; previous JSON preserved.\n' + '\n'.join(errors))
     now = dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds')

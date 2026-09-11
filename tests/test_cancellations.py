@@ -1,4 +1,5 @@
 import copy
+from concurrent.futures import ThreadPoolExecutor
 import json
 from pathlib import Path
 import sys
@@ -83,6 +84,18 @@ class CancellationTests(unittest.TestCase):
     def test_external_links_rejected(self):
         with self.assertRaises(ValueError):
             w.official_url('https://example.com/fake')
+
+    def test_parallel_request_budget_is_shared(self):
+        client = w.Client(max_requests=2, delay=0)
+        def attempt(_):
+            try:
+                client.get('https://www.moel.go.kr/')
+            except RuntimeError:
+                return
+        with patch.object(w, 'urlopen', side_effect=OSError('network unavailable')), patch.object(w.time, 'sleep'):
+            with ThreadPoolExecutor(max_workers=4) as pool:
+                list(pool.map(attempt, range(8)))
+        self.assertEqual(client.count, 2)
 
 
 if __name__ == '__main__':
