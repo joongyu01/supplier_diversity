@@ -58,6 +58,10 @@ python -m http.server 8000 --directory site   # http://localhost:8000
 
 수집은 하루 1,000회 한도 안에서 품명 수십 개면 충분합니다. 재수집하려면 `data/raw/shopmall/<품명>.csv`를 지우고 다시 실행합니다.
 
+## 인증취소 공고 모니터 (별도 기능)
+
+사회적기업 인증취소·반납 공고를 GitHub Actions가 매일 08:23(KST)에 고용노동부 관서 게시판에서 수집해 [공고 모니터 화면](https://joongyu01.github.io/supplier_diversity/cancellations.html)에 보여줍니다. 범위·한계는 [docs/cancellation-monitor.md](docs/cancellation-monitor.md). 카탈로그 파이프라인과는 독립적이며 `beautifulsoup4`가 필요합니다(`requirements-cancellation.txt`).
+
 ## 구조
 
 ```text
@@ -71,5 +75,6 @@ scripts/build_catalog.py     엑셀 대조·카탈로그 생성
 scripts/collect.py           (보조) 사용자정보 API로 지정 업체의 등록 물품 조회
 tests/                       정규화·조인·연락처 병합·산출 스키마 검증
 docs/api-notes.md            실호출로 확인한 명세와 한계
-docs/data-sources.md         엑셀 시트별 출처·건수·제외 항목
+docs/data-sources.md         엑셀 시트별 출처·건수·연락처 항목
+scripts/watch_cancellations.py 인증취소 공고 모니터 (별도 기능)
 ```

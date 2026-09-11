@@ -1,5 +1,7 @@
-name: Collect procurement data
+name: Watch social enterprise cancellations
 on:
+  schedule:
+    - cron: '23 23 * * *' # 08:23 Asia/Seoul; GitHub may delay scheduled runs.
   workflow_dispatch:
 permissions:
   contents: write
@@ -9,30 +11,33 @@ concurrency:
   group: pages
   cancel-in-progress: false
 jobs:
-  collect:
+  watch:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-cancellation.txt
       - run: python -m pip install -r requirements-cancellation.txt
-      - run: python -m unittest discover -s tests -v
-      - name: Collect registered products
-        env:
-          DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
-        run: python scripts/collect.py
-      - name: Save snapshot
+      - run: python -m unittest discover -s tests -p test_cancellations.py -v
+      - name: Read official notices
+        run: python scripts/watch_cancellations.py
+      - name: Commit successful scan
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add site/data/catalog.json
+          git add site/data/cancellation-notices.json
           if ! git diff --cached --quiet; then
-            git commit -m 'data: update procurement catalog'
-            git push
+            git commit -m 'data: check social enterprise cancellation notices'
+            git push origin HEAD:main
           fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
