@@ -1,5 +1,9 @@
 # Supplier Diversity · 공공구매 물품 조사
 
+인증 변경 공고는 [공고 모니터 화면](https://joongyu01.github.io/supplier_diversity/cancellations.html)에서 확인합니다.
+GitHub Actions가 매일 한국시간 08:23에 고용노동부 관서의 인증취소·반납 관련 공고를 수집합니다.
+범위·실행 방법·판정 한계는 [운영 문서](docs/cancellation-monitor.md)를 참고하세요.
+
 사회적기업, 장애인기업, 여성기업, 중소기업, 중증장애인생산품 생산시설의 **나라장터 등록 공급물품**을 조사하는 프로젝트입니다.
 
 - 웹사이트: https://joongyu01.github.io/supplier_diversity/

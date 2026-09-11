@@ -1,0 +1,203 @@
+{
+  "directoryCheckedAt": "2026-09-11",
+  "offices": [
+    {
+      "code": "andong",
+      "name": "대구지방고용노동청안동지청"
+    },
+    {
+      "code": "ansan",
+      "name": "경기지방고용노동청안산지청"
+    },
+    {
+      "code": "anyang",
+      "name": "경기지방고용노동청안양지청"
+    },
+    {
+      "code": "boryeong",
+      "name": "대전지방고용노동청보령지청"
+    },
+    {
+      "code": "bucheon",
+      "name": "중부지방고용노동청부천지청"
+    },
+    {
+      "code": "busan",
+      "name": "부산지방고용노동청"
+    },
+    {
+      "code": "busanbukbu",
+      "name": "부산지방고용노동청부산북부지청"
+    },
+    {
+      "code": "busandongbu",
+      "name": "부산지방고용노동청부산동부지청"
+    },
+    {
+      "code": "changwon",
+      "name": "부산지방고용노동청창원지청"
+    },
+    {
+      "code": "cheonan",
+      "name": "대전지방고용노동청천안지청"
+    },
+    {
+      "code": "cheongju",
+      "name": "대전지방고용노동청청주지청"
+    },
+    {
+      "code": "chungju",
+      "name": "대전지방고용노동청충주지청"
+    },
+    {
+      "code": "daegu",
+      "name": "대구지방고용노동청"
+    },
+    {
+      "code": "daeguseobu",
+      "name": "대구지방고용노동청대구서부지청"
+    },
+    {
+      "code": "daejeon",
+      "name": "대전지방고용노동청"
+    },
+    {
+      "code": "gangneung",
+      "name": "중부지방고용노동청강릉지청"
+    },
+    {
+      "code": "gangwon",
+      "name": "중부지방고용노동청강원지청"
+    },
+    {
+      "code": "goyang",
+      "name": "경기지방고용노동청고양지청"
+    },
+    {
+      "code": "gumi",
+      "name": "대구지방고용노동청구미지청"
+    },
+    {
+      "code": "gunsan",
+      "name": "광주지방고용노동청군산지청"
+    },
+    {
+      "code": "gwangju",
+      "name": "광주지방고용노동청"
+    },
+    {
+      "code": "gyeonggi",
+      "name": "경기지방고용노동청"
+    },
+    {
+      "code": "iksan",
+      "name": "광주지방고용노동청익산지청"
+    },
+    {
+      "code": "incheonbukbu",
+      "name": "중부지방고용노동청인천북부지청"
+    },
+    {
+      "code": "jeonju",
+      "name": "광주지방고용노동청전주지청"
+    },
+    {
+      "code": "jinju",
+      "name": "부산지방고용노동청진주지청"
+    },
+    {
+      "code": "jungbu",
+      "name": "중부지방고용노동청"
+    },
+    {
+      "code": "mokpo",
+      "name": "광주지방고용노동청목포지청"
+    },
+    {
+      "code": "pohang",
+      "name": "대구지방고용노동청포항지청"
+    },
+    {
+      "code": "pyeongtaek",
+      "name": "경기지방고용노동청평택지청"
+    },
+    {
+      "code": "seongnam",
+      "name": "경기지방고용노동청성남지청"
+    },
+    {
+      "code": "seosan",
+      "name": "대전지방고용노동청서산지청"
+    },
+    {
+      "code": "seoul",
+      "name": "서울지방고용노동청"
+    },
+    {
+      "code": "seoulbukbu",
+      "name": "서울지방고용노동청서울북부지청"
+    },
+    {
+      "code": "seouldongbu",
+      "name": "서울지방고용노동청서울동부지청"
+    },
+    {
+      "code": "seoulgangnam",
+      "name": "서울지방고용노동청서울강남지청"
+    },
+    {
+      "code": "seoulgwanak",
+      "name": "서울지방고용노동청서울관악지청"
+    },
+    {
+      "code": "seoulnambu",
+      "name": "서울지방고용노동청서울남부지청"
+    },
+    {
+      "code": "seoulseobu",
+      "name": "서울지방고용노동청서울서부지청"
+    },
+    {
+      "code": "taebaek",
+      "name": "중부지방고용노동청태백지청"
+    },
+    {
+      "code": "tongyeong",
+      "name": "부산지방고용노동청통영지청"
+    },
+    {
+      "code": "uijeongbu",
+      "name": "경기지방고용노동청의정부지청"
+    },
+    {
+      "code": "ulsan",
+      "name": "부산지방고용노동청울산지청"
+    },
+    {
+      "code": "ulsandongbu",
+      "name": "부산지방고용노동청울산동부지청"
+    },
+    {
+      "code": "wonju",
+      "name": "중부지방고용노동청원주지청"
+    },
+    {
+      "code": "yangsan",
+      "name": "부산지방고용노동청양산지청"
+    },
+    {
+      "code": "yeongju",
+      "name": "대구지방고용노동청영주지청"
+    },
+    {
+      "code": "yeongwol",
+      "name": "중부지방고용노동청영월출장소"
+    },
+    {
+      "code": "yeosu",
+      "name": "광주지방고용노동청여수지청"
+    }
+  ],
+  "initialSince": "2026-06-30",
+  "directorySource": "https://labor.moel.go.kr/portalGuide/competence_find.do"
+}
