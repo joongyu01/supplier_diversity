@@ -59,8 +59,8 @@ class CollectorTests(unittest.TestCase):
     def test_initial_catalog(self):
         root=Path(__file__).resolve().parents[1]
         data=json.loads((root/'site/data/catalog.json').read_text(encoding='utf-8'))
-        self.assertEqual(data['schemaVersion'],1)
-        self.assertIsInstance(data['products'],list)
+        self.assertEqual(data['schemaVersion'],2)
+        self.assertIsInstance(data['chunks'],list)
 
 
 if __name__ == '__main__': unittest.main()

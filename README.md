@@ -1,75 +1,75 @@
-# Supplier Diversity · 공공구매 물품 조사
+# Supplier Diversity · 공공구매 우대기업 물품 카탈로그
 
-사회적기업, 장애인기업, 여성기업, 중소기업, 중증장애인생산품 생산시설의 **나라장터 등록 공급물품**을 조사하는 프로젝트입니다.
+공공기관 구매담당자가 **"이 물품을 우대기업 중 어디서 얼마에 살 수 있나"** 를 찾는 도구입니다. 나라장터 종합쇼핑몰 등록 품목을 정부권장정책 대상기업(사회적기업·중증장애인생산품 생산시설·여성기업·장애인기업·장애인표준사업장·창업기업·협동조합·시범구매) 목록과 사업자등록번호로 대조합니다.
 
 - 웹사이트: https://joongyu01.github.io/supplier_diversity/
-- 데이터 출처: [조달청 나라장터 사용자정보 서비스](https://www.data.go.kr/data/15129466/openapi.do)
-- 화면: 물품·업체 검색, 기업 유형·지역 필터, 조회 결과 CSV 다운로드, 인증 근거 링크
-- 초기 상태: **실제 API 데이터 수집 전**. 예시 업체나 문서의 샘플 응답을 실제 조사 결과로 게시하지 않습니다.
+- 데이터: [조달청 종합쇼핑몰 품목정보 서비스](https://www.data.go.kr/data/15129471/openapi.do) + 조달청 정부권장정책 대상기업 목록(2026-06-30 기준, 엑셀)
+- 화면: ① 품명 카드 → 우대유형별 공급업체 수 → ② 규격·제조사·업체명 검색, 계약단가, 대표자·주소·전화, CSV 다운로드 → ③ 종합쇼핑몰에 없는 품목은 중증장애인생산품 생산시설의 생산품목·연락처 검색
 
-## 조사 범위
+## 어떻게 동작하나
 
-요청한 유형을 각각 별도 분류로 관리합니다. 모든 유형을 사회적기업으로 자동 간주하지 않습니다. 사용자가 말한 ‘중증장애인기업’의 조사 분류는 우선 ‘중증장애인생산품 생산시설’로 두었으며, 이후 대상 범위를 확정해 확장할 수 있습니다.
-
-이 API의 확인된 기본정보 항목만으로는 요청한 기업 유형별 인증을 판정할 수 없습니다. **별도 인증 근거가 있는 조사 대상 목록 → 사업자등록번호로 API 연결 → 등록 공급물품 탐색** 순서입니다. 등록 물품은 실제 상품명·판매 중 여부·가격·재고·우선구매 실적 인정 여부를 보증하지 않습니다. 구매 전에 인증서 및 판매 여부를 확인해야 합니다.
-
-## 시작하기
-
-1. 공공데이터포털에서 위 서비스를 활용신청하고 인증키를 발급받습니다.
-2. 저장소 **Settings → Secrets and variables → Actions → New repository secret**에 `DATA_GO_KR_SERVICE_KEY`를 등록합니다. 인증키는 소스·설정 JSON·웹 화면에 넣지 않습니다.
-3. `config/suppliers.json`에 실제 조사 대상과 유형별 근거를 등록합니다. 아래는 형식 설명용이며 실제 기업이 아닙니다. 확인일은 근거를 실제 확인한 날짜로 입력합니다.
-
-```json
-[
-  {
-    "bizno": "0000000000",
-    "name": "실제 조사 대상 업체명으로 교체",
-    "evidence": [
-      {
-        "category": "여성기업",
-        "url": "https://example.org/실제-인증-근거로-교체",
-        "checkedAt": "2026-09-09",
-        "validUntil": ""
-      }
-    ]
-  }
-]
+```
+config/product_names.txt        기관이 실제 구매하는 품명 목록 (수십 개)
+        │  scripts/collect_shopmall.py — 품명별 2026년 등록분 수집, 999건/호출
+        ▼
+data/raw/shopmall/<품명>.csv     원시 응답 (git 미추적)
+        │  scripts/collect_suppliers.py — 등장 업체의 대표자·주소·전화 (업체당 1회)
+data/raw/suppliers.csv
+        │  scripts/build_catalog.py — 엑셀 사업자번호와 대조, 우대기업 품목만 남김
+        ▼
+site/data/catalog.json          업체 정보 + 품명 인덱스 + 중증 생산시설 (초기 로드, ~250KB)
+site/data/chunks/<품명>.json     품목 상세 (품명 선택 시 개별 로드)
 ```
 
-여러 유형이면 evidence에 각각 추가합니다. 유형 허용값은 `사회적기업`, `장애인기업`, `여성기업`, `중소기업`, `중증장애인생산품 생산시설`입니다. URL·확인일은 필수이며 만료일 미등록은 유효 인증을 보증하지 않습니다. 만료일이 지난 근거가 있으면 수집을 중단합니다. 공개 저장소이므로 공개해도 되는 근거와 업체 정보만 등록하세요.
+종합쇼핑몰 API는 검색용이 아니라 등록·변경 이벤트 피드라서 전체를 받으면 월 10~19만 건입니다. 대신 `getShoppingMallPrdctInfoList`의 품명 필터(부분일치)가 살아 있어 **필요한 품명만** 받습니다. 품명 15개 파일럿이 109회 호출·40분이었습니다. 확인된 명세와 한계는 [docs/api-notes.md](docs/api-notes.md), 엑셀 시트별 내용은 [docs/data-sources.md](docs/data-sources.md)에 있습니다.
 
-4. **Actions → Collect procurement data → Run workflow**를 실행합니다. 성공한 전체 수집 결과만 저장·게시합니다. 수집 실패 시 이전 결과가 유지됩니다.
-5. 웹사이트에서 수집일·업체 수와 등록 공급물품을 확인합니다.
+## 게시 원칙
 
-수집은 수동 실행입니다. 주기·호출량을 확정한 뒤 정기 수집을 추가할 수 있습니다. 기본 배포는 main push마다 실행됩니다. 수집 workflow는 GitHub 토큰의 연쇄 workflow 제한을 피하도록 수집 후 직접 Pages를 배포합니다.
+- **가공하지 않습니다.** 원시 CSV가 없으면 빌드는 중단합니다. 실제 업체명·사업자등록번호에 지어낸 물품·가격을 붙이지 않습니다.
+- **사업자등록번호로만 대조합니다.** 기업명 문자열 매칭은 하지 않습니다.
+- **우대기업이 아닌 업체의 품목은 싣지 않습니다.** 품명별 전체 건수만 `summary.json`에 남깁니다.
+- **사업자등록 공개정보는 싣습니다.** 대표자·사업장 주소·전화·팩스·홈페이지는 나라장터 업체 기본정보(`getPrcrmntCorpBasicInfo02`)와 정부권장정책 목록에서 가져옵니다. 동명 사업체를 대표자로 구분하고 구매 담당자가 바로 연락·방문하기 위한 것입니다. 담당자 개인 이메일 같은 개인 연락처는 싣지 않습니다.
+- 인증키·요청 URL·원시 응답은 저장소와 로그에 남기지 않습니다. 엑셀 원본(13.8MB)과 `data/raw/`는 git 미추적입니다.
 
-## 로컬 실행
+화면의 단가·계약기간·인증 유효기간은 수집 시점 값입니다. 구매 전 나라장터에서 확인하세요.
 
-Python 3.10 이상, 별도 Python 패키지 설치 불필요.
+## 실행
 
-```powershell
-python -m http.server 8000 --directory site
-```
-
-브라우저에서 http://localhost:8000 접속. 파일을 직접 더블클릭하면 JSON fetch가 제한될 수 있습니다.
-
-로컬 수집은 `DATA_GO_KR_SERVICE_KEY` 환경변수를 설정한 상태에서 `python scripts/collect.py`를 실행합니다. 공개 로그에 인증키나 전체 요청 URL을 출력하지 않습니다.
+Python 3.10 이상. 수집·빌드에 `openpyxl`이 필요합니다(`pip install openpyxl`). 사이트와 테스트는 표준 라이브러리만 씁니다.
 
 ```powershell
+# 1) 품명 목록 편집
+notepad config\product_names.txt
+
+# 2) 수집 (공공데이터포털 인증키, 15129471 활용신청 필요)
+$env:DATA_GO_KR_SERVICE_KEY = "발급받은 키"
+python scripts\collect_shopmall.py            # 이미 있는 품명 파일은 건너뜀
+python scripts\collect_shopmall.py 프로젝터 UPS  # 특정 품명만
+python scripts\collect_suppliers.py           # 등장 업체 연락처 (이미 있는 업체는 건너뜀)
+
+# 3) 빌드 — 엑셀 원본이 저장소 루트에 있어야 함
+python scripts\build_catalog.py
+
+# 4) 확인
 python -m unittest discover -s tests -v
-node --check site/app.js
+node --check site\app.js
+python -m http.server 8000 --directory site   # http://localhost:8000
 ```
+
+수집은 하루 1,000회 한도 안에서 품명 수십 개면 충분합니다. 재수집하려면 `data/raw/shopmall/<품명>.csv`를 지우고 다시 실행합니다.
 
 ## 구조
 
 ```text
-site/                   GitHub Pages에 게시되는 정적 웹사이트
-site/data/catalog.json  API 수집 결과 (공개 필드만 저장)
-config/suppliers.json   인증 근거가 있는 조사 대상 목록
-scripts/collect.py      업체 기본정보·공급물품 수집 및 결합
-tests/                  오류·페이지 누락·업체 식별자·결합 검증
-.github/workflows/      Pages 배포 / 수동 API 수집
-docs/api-notes.md       확인된 명세와 한계
+site/                        GitHub Pages 정적 사이트
+site/data/catalog.json       업체·품명 인덱스·중증 생산시설
+site/data/chunks/            품명별 품목 상세
+config/product_names.txt     수집 대상 품명
+scripts/collect_shopmall.py  품명 기준 수집
+scripts/collect_suppliers.py 업체 기본정보(대표자·주소·전화) 수집
+scripts/build_catalog.py     엑셀 대조·카탈로그 생성
+scripts/collect.py           (보조) 사용자정보 API로 지정 업체의 등록 물품 조회
+tests/                       정규화·조인·연락처 병합·산출 스키마 검증
+docs/api-notes.md            실호출로 확인한 명세와 한계
+docs/data-sources.md         엑셀 시트별 출처·건수·제외 항목
 ```
-
-브라우저에는 인증키가 전달되지 않습니다. Actions가 API를 호출하고 정적 JSON을 생성하므로 Pages의 서버 부재와 브라우저 CORS 제약을 피합니다. 공개 결과는 업체명·사업자등록번호·지역·기업 유형 근거·물품 정보로 제한하며 대표자명·상세주소·연락처는 저장하지 않습니다.

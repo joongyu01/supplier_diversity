@@ -1,16 +1,193 @@
 <!doctype html>
 <html lang="ko">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="기업 유형과 나라장터 등록 공급물품을 연결하는 공공구매 조사 프로젝트"><title>공공구매 물품 탐색 · Supplier Diversity</title><link rel="stylesheet" href="./styles.css"><script type="module" src="./app.js"></script></head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="나라장터 종합쇼핑몰 등록 품목 중 우선구매 우대기업(사회적기업·중증장애인생산품·여성·장애인기업 등) 공급 물품 조회">
+  <title>우선구매 우대기업 물품 카탈로그 · Supplier Diversity</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
 <body>
-<header><a class="brand" href="./"><span class="logo">s<span>+</span></span><span>Supplier Diversity<small>공공구매 조사 프로젝트</small></span></a><nav aria-label="주 메뉴"><a href="#explore">물품 탐색</a><a href="#method">조사 방법</a><a href="https://github.com/joongyu01/supplier_diversity" target="_blank" rel="noopener">GitHub ↗</a></nav></header>
+<header>
+  <a class="brand" href="./">
+    <span class="logo">s<span>+</span></span>
+    <span>Supplier Diversity<small>공공구매 우대기업 물품 카탈로그</small></span>
+  </a>
+  <nav aria-label="주 메뉴">
+    <a href="#categories">품명별 조회</a>
+    <a href="#facilities">중증 생산시설</a>
+    <a href="#method">데이터 출처</a>
+    <a href="https://github.com/joongyu01/supplier_diversity" target="_blank" rel="noopener">GitHub ↗</a>
+  </nav>
+</header>
+
 <main>
-<section class="hero"><div><div class="eyebrow">PUBLIC PROCUREMENT RESEARCH</div><h1>더 다양한 기업을,<br><span>더 나은 구매로.</span></h1><p>기업 유형과 나라장터 공급물품을 함께 살펴보고,<br>우리 기관에 필요한 공공구매 후보를 찾아보세요.</p><a class="primary" href="#explore">등록 공급물품 탐색 ↓</a></div><aside class="hero-card"><div class="card-top"><span class="dot"></span> DATA CONNECTION</div><div class="flow-node">기업 유형 · 인증 근거<span>사회적 · 장애인 · 여성 · 중소 · 중증장애인</span></div><div class="connector">사업자등록번호로 연결 ↓</div><div class="flow-node accent">나라장터 등록 공급물품<span>세부품명 · 분류번호 · 제조 여부</span></div><p>구매 가능 여부와 인증 유효성은<br>최종 구매 전에 확인하세요.</p></aside></section>
-<section class="stats" aria-label="데이터 현황"><article><span>조사 대상 업체</span><strong id="supplier-count">—</strong><small>현재 수집 범위</small></article><article><span>등록 공급물품</span><strong id="product-count">—</strong><small>업체별 물품 연결 건수</small></article><article><span>세부품명 종류</span><strong id="class-count">—</strong><small>분류번호 기준</small></article><article><span>마지막 수집</span><strong class="date" id="updated">수집 전</strong><small id="status-label">데이터 확인 중</small></article></section>
-<section id="explore" class="explore"><div class="section-heading"><div><div class="eyebrow">EXPLORE THE CATALOG</div><h2>어떤 물품을 찾으시나요?</h2></div><button id="export" class="secondary" disabled>조회 결과 CSV ↓</button></div>
-<div class="filters"><label class="search">물품·업체 검색<input id="search" type="search" placeholder="물품명, 업체명 또는 세부품명번호 검색"></label><label>기업 유형<select id="category"><option value="">전체 유형</option><option>사회적기업</option><option>장애인기업</option><option>여성기업</option><option>중소기업</option><option>중증장애인생산품 생산시설</option></select></label><label>지역<select id="region"><option value="">전국</option></select></label><button id="reset" class="secondary">초기화</button></div>
-<div class="result-head"><span id="result-count" role="status" aria-live="polite">데이터를 불러오고 있습니다.</span><span>나라장터 등록 정보 기준</span></div><div id="results"></div><div class="pagination" id="pagination" hidden><button class="secondary" id="prev">← 이전</button><span id="page-label"></span><button class="secondary" id="next">다음 →</button></div>
-<p class="notice">등록 공급물품은 현재 판매 중인 개별 상품이나 재고·가격을 의미하지 않습니다. 기업 유형은 별도 근거 자료를 연결하며, 목록에 없다고 해당 기업 유형이 아닌 것은 아닙니다.</p></section>
-<section id="method" class="method"><div class="eyebrow">HOW WE RESEARCH</div><h2>출처를 남기는 물품 조사</h2><div class="steps"><article><b>01</b><h3>조사 대상 정리</h3><p>기업명과 사업자등록번호, 기업 유형의 근거 URL과 확인일을 등록합니다.</p></article><article><b>02</b><h3>등록 공급물품 연결</h3><p>조달청 사용자정보 API에서 업체 기본정보와 공급물품을 수집해 연결합니다.</p></article><article><b>03</b><h3>구매 전 확인</h3><p>인증 유효기간, 실제 판매 여부, 규격과 견적을 업체 또는 공식 자료로 확인합니다.</p></article></div></section>
-<section class="source"><div><h3>데이터 출처와 조사 범위</h3><p>사회적기업·장애인기업·여성기업·중소기업·중증장애인생산품 생산시설을 각각의 조사 유형으로 관리합니다. 현재 제공되는 인증 항목만으로 이들 유형을 자동 판정하지 않습니다.</p></div><a href="https://www.data.go.kr/data/15129466/openapi.do" target="_blank" rel="noopener">조달청 API 안내 ↗</a></section>
-</main><footer><span>Supplier Diversity</span><span>공공구매의 시작, 확인 가능한 데이터에서.</span></footer>
-</body></html>
+  <section class="banner-notice" role="note">
+    <div class="notice-icon">ℹ</div>
+    <div class="notice-text">
+      <strong>구매 전 확인 사항</strong>
+      <p>나라장터 종합쇼핑몰 등록 품목(2026년 등록분, <span id="notice-collected">수집일 기준</span>)과 기준일 2026-06-30 정부권장정책 대상기업 목록을 사업자등록번호로 대조한 결과입니다. 실제 판매 가능 여부·단가·인증 유효성은 구매 전 나라장터에서 확인하세요. 수집 대상 품명 목록에 없는 물품과 종합쇼핑몰 미등록 우대기업은 포함되지 않습니다.</p>
+    </div>
+  </section>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">PREFERENTIAL PROCUREMENT CATALOG</div>
+      <h1>이 물품, 우대기업 중<br><span>어디서 얼마에 살 수 있나.</span></h1>
+      <p>품명을 고르면 사회적기업·중증장애인생산품·여성기업·장애인기업별로 몇 곳이 공급하는지 바로 보이고,<br>규격·제조사·업체명으로 좁혀 계약단가까지 확인합니다.</p>
+      <a class="primary" href="#categories">품명 고르러 가기 ↓</a>
+    </div>
+    <aside class="hero-card">
+      <div class="card-top"><span class="dot"></span> 두 공식 자료의 결합</div>
+      <div class="flow-node">
+        나라장터 종합쇼핑몰 등록 품목
+        <span>품명 · 규격 · 제조사 · 계약단가 · 계약업체 사업자등록번호</span>
+      </div>
+      <div class="connector">사업자등록번호 10자리로 대조 ↓</div>
+      <div class="flow-node accent">
+        정부권장정책 대상기업 (2026-06-30)
+        <span>사회적 · 중증 · 여성 · 장애인 · 창업 · 표준사업장 · 협동조합 · 시범구매</span>
+      </div>
+      <p>기업명 문자열 매칭은 하지 않습니다.<br>대표자·사업장 주소·전화는 나라장터 업체 기본정보에서 가져옵니다.</p>
+    </aside>
+  </section>
+
+  <section class="stats" aria-label="데이터 현황">
+    <article><span>우대기업 등록 품목</span><strong id="product-count">—</strong><small>종합쇼핑몰 2026년 등록분</small></article>
+    <article><span>공급 우대기업</span><strong id="supplier-count">—</strong><small>사업자등록번호 대조 일치</small></article>
+    <article><span>중증장애인생산품 생산시설</span><strong id="facility-count">—</strong><small>생산품목 목록 보유</small></article>
+    <article><span>수집일</span><strong class="date" id="updated">—</strong><small id="status-label">데이터 로드 중</small></article>
+  </section>
+
+  <section id="categories" class="explore">
+    <div class="section-heading">
+      <div>
+        <div class="eyebrow">STEP 1 · 품명 선택</div>
+        <h2>어떤 물품을 구매하시나요?</h2>
+      </div>
+      <span class="text-muted" id="category-note"></span>
+    </div>
+    <div class="category-grid" id="category-grid" role="list"></div>
+  </section>
+
+  <section id="explore" class="explore" hidden>
+    <div class="section-heading">
+      <div>
+        <div class="eyebrow">STEP 2 · 공급 우대기업</div>
+        <h2 id="explore-title">—</h2>
+      </div>
+      <button id="export" class="secondary" disabled>조회 결과 CSV 다운로드 ↓</button>
+    </div>
+
+    <div class="filters">
+      <label class="search">
+        규격 · 제조사 · 품명 · 업체명 검색
+        <input id="search" type="search" placeholder="예: 제트스트림, 1200×800, 퍼시스, 동연디자인">
+      </label>
+      <label>
+        우대기업 유형
+        <select id="filter-type">
+          <option value="">전체 우대유형</option>
+          <option value="사회적기업">사회적기업</option>
+          <option value="중증장애인생산품 생산시설">중증장애인생산품 생산시설</option>
+          <option value="여성기업">여성기업</option>
+          <option value="장애인기업">장애인기업</option>
+          <option value="장애인표준사업장">장애인표준사업장</option>
+          <option value="창업기업">창업기업</option>
+          <option value="사회적협동조합">사회적협동조합</option>
+          <option value="기술개발제품 시범구매">기술개발제품 시범구매</option>
+          <option value="자활용사촌">자활용사촌</option>
+        </select>
+      </label>
+      <label>
+        세부 품명
+        <select id="filter-name"><option value="">전체</option></select>
+      </label>
+      <label>
+        정렬
+        <select id="sort">
+          <option value="">기본</option>
+          <option value="price-asc">단가 낮은순</option>
+          <option value="price-desc">단가 높은순</option>
+          <option value="company">업체명</option>
+        </select>
+      </label>
+      <label class="check"><input type="checkbox" id="hide-large" checked> 대기업·상호출자 제외</label>
+      <button id="reset" class="secondary">초기화</button>
+    </div>
+
+    <div class="badge-bar" id="badge-bar" aria-label="조회 결과 우대유형별 업체 수"></div>
+
+    <div class="result-head">
+      <span id="result-count" role="status" aria-live="polite"></span>
+      <span>단가는 수집 시점의 종합쇼핑몰 계약단가(원)</span>
+    </div>
+    <div id="results"></div>
+    <div class="pagination" id="pagination" hidden>
+      <button class="secondary" id="prev">← 이전</button>
+      <span id="page-label">1 / 1</span>
+      <button class="secondary" id="next">다음 →</button>
+    </div>
+  </section>
+
+  <section id="facilities" class="explore">
+    <div class="section-heading">
+      <div>
+        <div class="eyebrow">중증장애인생산품 생산시설 · 생산품목</div>
+        <h2>종합쇼핑몰에 없는 물품은 여기서</h2>
+      </div>
+      <span class="text-muted">복사용지·현수막·쇼핑백·인쇄물처럼 종합쇼핑몰에 등록되지 않는 품목은 지정 생산시설의 생산품목 목록(2026-06-30 기준)으로 찾고, 시설에 직접 연락합니다.</span>
+    </div>
+    <div class="filters">
+      <label class="search">
+        생산품목 · 시설명 · 사업자등록번호 검색
+        <input id="facility-search" type="search" placeholder="예: 복사용지, 현수막, 화장지류, 소독방역, 판촉물인쇄">
+      </label>
+      <label>
+        지역
+        <select id="facility-region"><option value="">전국</option></select>
+      </label>
+      <label class="check"><input type="checkbox" id="facility-valid" checked> 유효 지정만</label>
+    </div>
+    <div class="result-head"><span id="facility-count-label" role="status"></span><span>지정 유효기간은 구매 전 재확인</span></div>
+    <div id="facility-results"></div>
+  </section>
+
+  <section id="method" class="method">
+    <div class="eyebrow">DATA SOURCES</div>
+    <h2>어떻게 만들어졌나</h2>
+    <div class="steps">
+      <article>
+        <b>01</b>
+        <h3>품명 기준 수집</h3>
+        <p>조달청 종합쇼핑몰 품목정보 API(<code>getShoppingMallPrdctInfoList</code>)를 <code>config/product_names.txt</code>의 품명으로 조회해 2026년 등록분을 받습니다. 전체 미러링이 아니라 기관이 실제 구매하는 품명만 수집합니다.</p>
+      </article>
+      <article>
+        <b>02</b>
+        <h3>사업자등록번호 대조</h3>
+        <p>응답의 <code>cntrctCorpBizno</code>와 정부권장정책 대상기업 174,874곳(취소 제외)의 사업자번호를 10자리로 대조합니다. 대기업·상호출자제한 기업은 별도 표시합니다.</p>
+      </article>
+      <article>
+        <b>03</b>
+        <h3>게시 원칙</h3>
+        <p>우대기업이 아닌 업체의 품목은 싣지 않습니다. 수집되지 않은 품목을 가공해 채우지 않습니다. 대표자·사업장 주소·전화는 사업자등록 공개정보(나라장터 업체 기본정보·정부권장정책 목록)이며 동명 사업체 구분과 구매 연락에 쓰입니다.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="source">
+    <div>
+      <h3>데이터 출처</h3>
+      <p>공공데이터포털 「조달청_종합쇼핑몰 품목정보 서비스」(15129471) · 조달청 정부권장정책 대상기업 목록(2026-06-30 기준). 본 화면은 참고용이며 계약·인증의 법적 효력은 나라장터 원본을 따릅니다.</p>
+    </div>
+    <a href="https://www.data.go.kr/data/15129471/openapi.do" target="_blank" rel="noopener">조달청 오픈API 안내 ↗</a>
+  </section>
+</main>
+
+<footer>
+  <span>Supplier Diversity · 공공구매 우대기업 물품 카탈로그</span>
+  <span>검증 가능한 공식 데이터만 싣습니다.</span>
+</footer>
+</body>
+</html>

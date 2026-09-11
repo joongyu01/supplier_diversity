@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 2,
+  "basisDate": "2026-06-30",
+  "checkDate": "2026-09-11",
+  "generatedAt": "2026-09-11T13:58:40.746374+00:00",
+  "totalProducts": 121028,
+  "uniqueSuppliers": 844,
+  "facilities": 826,
+  "typeDistribution": {
+    "여성기업": {
+      "products": 70664,
+      "suppliers": 450
+    },
+    "창업기업": {
+      "products": 36602,
+      "suppliers": 275
+    },
+    "장애인기업": {
+      "products": 20431,
+      "suppliers": 104
+    },
+    "사회적기업": {
+      "products": 14467,
+      "suppliers": 86
+    },
+    "장애인표준사업장": {
+      "products": 13062,
+      "suppliers": 75
+    },
+    "기술개발제품 시범구매": {
+      "products": 11917,
+      "suppliers": 103
+    },
+    "중증장애인생산품 생산시설": {
+      "products": 5846,
+      "suppliers": 62
+    },
+    "사회적협동조합": {
+      "products": 2403,
+      "suppliers": 12
+    },
+    "자활용사촌": {
+      "products": 11,
+      "suppliers": 2
+    }
+  },
+  "queryTotals": {
+    "공기청정기": {
+      "all": 31,
+      "preferred": 15
+    },
+    "구급": {
+      "all": 20,
+      "preferred": 0
+    },
+    "냉장고": {
+      "all": 33,
+      "preferred": 23
+    },
+    "노트북": {
+      "all": 163,
+      "preferred": 53
+    },
+    "로커": {
+      "all": 35963,
+      "preferred": 20105
+    },
+    "마스크": {
+      "all": 71,
+      "preferred": 27
+    },
+    "모니터": {
+      "all": 691,
+      "preferred": 375
+    },
+    "무정전": {
+      "all": 4733,
+      "preferred": 737
+    },
+    "복사기": {
+      "all": 251,
+      "preferred": 111
+    },
+    "서가": {
+      "all": 958,
+      "preferred": 30
+    },
+    "소파": {
+      "all": 11460,
+      "preferred": 7218
+    },
+    "소화기": {
+      "all": 15,
+      "preferred": 1
+    },
+    "스캐너": {
+      "all": 30,
+      "preferred": 0
+    },
+    "신발장": {
+      "all": 5889,
+      "preferred": 3181
+    },
+    "용지": {
+      "all": 211,
+      "preferred": 66
+    },
+    "의자": {
+      "all": 30604,
+      "preferred": 16637
+    },
+    "장갑": {
+      "all": 53,
+      "preferred": 29
+    },
+    "정수기": {
+      "all": 170,
+      "preferred": 97
+    },
+    "제습기": {
+      "all": 115,
+      "preferred": 7
+    },
+    "조명": {
+      "all": 43199,
+      "preferred": 24093
+    },
+    "책상": {
+      "all": 30261,
+      "preferred": 16472
+    },
+    "청소기": {
+      "all": 154,
+      "preferred": 44
+    },
+    "칠판": {
+      "all": 3883,
+      "preferred": 2246
+    },
+    "칸막이": {
+      "all": 27201,
+      "preferred": 14322
+    },
+    "캐비닛": {
+      "all": 21399,
+      "preferred": 12066
+    },
+    "커피": {
+      "all": 18,
+      "preferred": 0
+    },
+    "컴퓨터": {
+      "all": 4521,
+      "preferred": 2390
+    },
+    "테이블": {
+      "all": 352,
+      "preferred": 212
+    },
+    "토너": {
+      "all": 495,
+      "preferred": 364
+    },
+    "프로젝터": {
+      "all": 309,
+      "preferred": 11
+    },
+    "프린터": {
+      "all": 179,
+      "preferred": 18
+    },
+    "화장지": {
+      "all": 96,
+      "preferred": 78
+    }
+  },
+  "expiredCount": 699,
+  "suppliersWithContact": 844,
+  "catalogBytes": 788487,
+  "chunkBytes": 34871422
+}
