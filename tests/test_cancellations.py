@@ -25,6 +25,7 @@ class CancellationTests(unittest.TestCase):
         self.assertEqual(w.classify('사회적기업 인증 반납신청 수리 공고'), 'surrender_notice')
         self.assertEqual(w.classify('사회적기업 인증취소 청문 공고'), 'prior_notice')
         self.assertEqual(w.classify('예비사회적기업 지정종료'), 'preliminary_enterprise')
+        self.assertEqual(w.classify('예비(부처형)사회적기업 지정 반납 수리 공고'), 'preliminary_enterprise')
         self.assertIsNone(w.classify('사회적기업 사업보고서 안내'))
 
     def test_markup_failure_is_not_empty_success(self):
@@ -33,6 +34,10 @@ class CancellationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             w.parse_listing(listing([], 10), 'https://www.moel.go.kr/')
         self.assertEqual(w.parse_listing(listing([]), 'https://www.moel.go.kr/'), ([], 0))
+
+    def test_real_listing_title_whitespace(self):
+        rows, _ = w.parse_listing(listing([('20260701080', '예비(부처형)사회적기업 지정 반납 수리 공고 ', '2026.07.31')]), 'https://www.moel.go.kr/')
+        self.assertEqual(rows[0]['title'], '예비(부처형)사회적기업 지정 반납 수리 공고')
 
     def test_pagination_and_cutoff(self):
         class Client:

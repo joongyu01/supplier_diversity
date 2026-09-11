@@ -21,7 +21,11 @@ BOARDS = {'notice': 'notice/noticeList.do', 'publicnotice': 'publicnotice/list.d
 
 
 def text(el):
-    return el.get_text(' ', strip=True) if el else ''
+    return normalize_text(el.get_text(' ', strip=True)) if el else ''
+
+
+def normalize_text(value):
+    return re.sub(r'\s+', ' ', value).strip()
 
 
 def official_url(url):
@@ -67,7 +71,7 @@ def classify(title):
     if '사회적기업' not in compact or not any(w in compact for w in ('취소', '반납', '철회', '종료')):
         return None
     # Pre-notices and preliminary enterprises must never become cancellation decisions.
-    if '예비사회적기업' in compact:
+    if re.search(r'예비(?:\([^)]*\))?사회적기업', compact):
         return 'preliminary_enterprise'
     if any(w in compact for w in ('청문', '사전통지', '의견제출', '예정')):
         return 'prior_notice'
@@ -99,7 +103,7 @@ def parse_listing(html, base_url):
         dt.date.fromisoformat(date)
         url = official_url(urljoin(base_url, a['href']))
         seq = parse_qs(urlparse(url).query)['bbs_seq'][0]
-        records.append({'id': seq, 'title': a.get('title') or text(a), 'publishedAt': date, 'url': url})
+        records.append({'id': seq, 'title': normalize_text(a.get('title') or text(a)), 'publishedAt': date, 'url': url})
     if total and not records:
         raise ValueError('Empty page despite nonzero total')
     return records, total
